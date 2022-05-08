@@ -37,10 +37,10 @@ defmodule Discounts do
     end)
   end
 
-  defp applies_discount?(cart, %{product_code: code, min: min}),
+  defp applies_discount?(cart, %{product_code: code, min: min}) when min > 0,
     do: !is_nil(cart[code]) && cart[code].count >= min
 
-  defp applies_discount?(cart, %{product_code: code, every: every}),
+  defp applies_discount?(cart, %{product_code: code, every: every}) when every > 0,
     do: !is_nil(cart[code]) && cart[code].count >= every
 
   defp applies_discount?(_cart, _discount), do: false
@@ -50,7 +50,7 @@ defmodule Discounts do
       cart[code].count *
         (Products.get_product_by_code(code).price * rate)
 
-  defp discount(cart, %{product_code: code, every: every, type: "free"}) do
+  defp discount(cart, %{product_code: code, every: every, type: "free"}) when every > 0 do
     times = Float.floor(cart[code].count / every)
     product = Products.get_product_by_code(code)
 
