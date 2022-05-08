@@ -3,36 +3,43 @@ defmodule Checkout do
   Documentation for `Checkout`.
   """
 
-  alias Products.Product
-  alias Discounts.Discount
-
   @doc """
-  Returns the total price from a list of `product_codes` with `Discount` applied.
+  Returns the total price from a list of `product_codes` with `discounts` applied.
 
   ## Examples
-
-    iex> Checkout.hello(["GR1", "GR1"])
+    iex> Checkout.checkout(["GR1", "GR1"], [%Discounts.Discount{product_code: "GR1", every: 2, rate: 0.5, type: "free"}])
     3.11
-
-    iex> Checkout.hello(["SR1", "SR1", "GR1", "SR1"])
-    16.61
-
   """
-  def checkout(product_codes) do
-    products = [
-      %Product{code: "GR1", name: "Green tea", price: 3.11},
-      %Product{code: "CF1", name: "Coffee", price: 11.23},
-      %Product{code: "SR1", name: "Strawberries", price: 5.00}
-    ]
+  def checkout(products, discounts \\ []) do
+    cart =
+      products
+      |> Products.get_multiple_products_by_code()
+      |> to_cart_format(products)
 
-    discounts = [
-      %Discount{product_code: "SR1", min: 3, quantity: 0.5}
-    ]
-
-    do_checkout(product_codes, products, discounts)
+    cart
+    |> total_gross()
+    |> Discounts.apply_all_discounts(cart, discounts)
+    |> Float.round(2)
   end
 
-  def do_checkout(product_codes, products, discounts) do
-    nil
+  defp total_gross(cart),
+    do:
+      Enum.reduce(cart, 0, fn {_key, value}, acc ->
+        acc + value.count * value.price
+      end)
+
+  defp to_cart_format(products, product_codes) do
+    codes = Enum.frequencies(product_codes)
+
+    Enum.reduce(products, codes, fn product, acc ->
+      Map.update(
+        acc,
+        product.code,
+        nil,
+        fn val ->
+          %{count: val, price: product.price}
+        end
+      )
+    end)
   end
 end

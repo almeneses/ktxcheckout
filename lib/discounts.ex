@@ -18,12 +18,11 @@ defmodule Discounts do
 
 
   ## Examples
-
-      iex> cart = %{"SR1" => %{count: 3, price: 5.00}}
-
-      iex> discounts = [%Discount{product_code: "SR1", min: 3, quantity: 0.5}]
-
-      iex> apply_all_discounts(15.00, cart, discounts)
+      iex> Discounts.apply_all_discounts(
+      ...> 15.00,
+      ...> %{"SR1" => %{count: 3, price: 5.00}},
+      ...> [%Discounts.Discount{product_code: "SR1", min: 3, quantity: 0.5, type: "quantity"}]
+      ...> )
       13.50
   """
   def apply_all_discounts(total_gross, cart, discounts) do
@@ -41,11 +40,26 @@ defmodule Discounts do
   defp applies_discount?(cart, %{product_code: code, min: min}),
     do: !is_nil(cart[code]) && cart[code].count >= min
 
+  defp applies_discount?(cart, %{product_code: code, every: every}),
+    do: !is_nil(cart[code]) && cart[code].count >= every
+
   defp applies_discount?(_cart, _discount), do: false
+
+  defp discount(cart, %{product_code: code, rate: rate, type: "rate"}),
+    do:
+      cart[code].count *
+        (Products.get_product_by_code(code).price * rate)
+
+  defp discount(cart, %{product_code: code, every: every, type: "free"}) do
+    times = Float.floor(cart[code].count / every)
+    product = Products.get_product_by_code(code)
+
+    (!is_nil(product) && times * product.price) || 0
+  end
 
   defp discount(
          cart,
-         %{product_code: code, quantity: quantity}
+         %{product_code: code, quantity: quantity, type: "quantity"}
        ),
        do: cart[code].count * quantity
 end

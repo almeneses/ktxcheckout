@@ -16,23 +16,24 @@ defmodule Products do
   Returns a `Product` which `code` match the given `code`
 
   ## Examples
-      iex> get_multiple_products_by_code("CF1")
-      %Product{code: "CF1"}
+      iex> Products.get_product_by_code("CF1")
+      %Products.Product{code: "CF1", name: "Coffee", price: 11.23}
 
-      iex> get_multiple_products_by_code("XYZ")
+      iex> Products.get_product_by_code("XYZ")
       nil
   """
   def get_product_by_code(code) when is_binary(code),
-    do: Enum.find(@products, &(&1.code == code))
+    do: Enum.find(@products, nil, &(&1.code == code))
 
   @doc """
   Returns a list of `Product` which `code` match the given `product_codes`
 
   ## Examples
-      iex> get_multiple_products_by_code(["CF1", "GR1"])
-      [%Product{code: "CF1"}, %Product{code: "GR1"}]
+      iex> Products.get_multiple_products_by_code(["CF1", "GR1"])
+      [%Products.Product{code: "CF1", name: "Coffee", price: 11.23},
+      %Products.Product{code: "GR1", name: "Green tea", price: 3.11}]
 
-      iex> get_multiple_products_by_code(["XYZ", "-1-1-1"])
+      iex> Products.get_multiple_products_by_code(["XYZ", "-1-1-1"])
       []
   """
   def get_multiple_products_by_code(product_codes) when is_list(product_codes) do

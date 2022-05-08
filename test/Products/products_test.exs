@@ -1,6 +1,8 @@
 defmodule ProductsTest do
   use ExUnit.Case
 
+  doctest Products
+
   describe "get_product_by_code/1" do
     test "Returns a `Product` if the given `code` matches a product" do
       search_code = "GR1"
