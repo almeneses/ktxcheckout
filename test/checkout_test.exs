@@ -1,7 +1,7 @@
 defmodule CheckoutTest do
   use ExUnit.Case
 
-  alias Products.Product
+  alias KtxCheckout.{Checkout, Products.Product, Discounts.Discount}
 
   doctest Checkout, import: true
 
@@ -14,9 +14,9 @@ defmodule CheckoutTest do
       ]
 
       discounts = [
-        %{product_code: "GR1", every: 2, rate: 0.5, type: "free"},
-        %{product_code: "SR1", min: 3, quantity: 0.5, type: "quantity"},
-        %{product_code: "CF1", min: 3, rate: 0.3333, type: "rate"}
+        %Discount{product_code: "GR1", every: 2, rate: 0.5, type: "free"},
+        %Discount{product_code: "SR1", min: 3, quantity: 0.5, type: "quantity"},
+        %Discount{product_code: "CF1", min: 3, rate: 0.3333, type: "rate"}
       ]
 
       {:ok, discounts: discounts, products: products}

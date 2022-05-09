@@ -1,15 +1,15 @@
-defmodule ProductsTest do
+defmodule KtxCheckout.ProductsTest do
   use ExUnit.Case
 
-  alias Products.Product
+  alias KtxCheckout.Products
 
   doctest Products, import: true
 
   setup do
     products = [
-      %Product{code: "GR1", name: "Green tea", price: 3.11},
-      %Product{code: "CF1", name: "Coffee", price: 11.23},
-      %Product{code: "SR1", name: "Strawberries", price: 5.00}
+      %Products.Product{code: "GR1", name: "Green tea", price: 3.11},
+      %Products.Product{code: "CF1", name: "Coffee", price: 11.23},
+      %Products.Product{code: "SR1", name: "Strawberries", price: 5.00}
     ]
 
     {:ok, products: products}

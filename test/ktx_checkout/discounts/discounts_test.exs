@@ -1,13 +1,16 @@
-defmodule DiscountsTest do
+defmodule KtxCheckout.DiscountsTest do
   use ExUnit.Case
 
-  alias Discounts.Discount
+  alias KtxCheckout.Discounts
 
-  doctest Discounts
+  doctest Discounts, import: true
 
   describe "apply_all_discounts/3" do
     setup do
-      discounts = [%Discount{product_code: "SR1", min: 3, quantity: 0.5, type: "quantity"}]
+      discounts = [
+        %Discounts.Discount{product_code: "SR1", min: 3, quantity: 0.5, type: "quantity"}
+      ]
+
       {:ok, discounts: discounts}
     end
 

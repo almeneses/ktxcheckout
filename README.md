@@ -34,18 +34,18 @@ Simple checkout system implemented in Elixir.
 - Create a list of products and some discounts for them:
 
 ```bash
-  iex> alias Products
-  iex> alias Discounts
-  iex> alias Checkout
+  iex> alias KtxCheckout.Products.Product
+  iex> alias KtxCheckout.Discounts.Discount
+  iex> alias KtxCheckout.Checkout
   iex> products = [%Product{name: "Test", code: "TS1", price: 2.95}, %Product{name: "Test2", code: "TS2", price: 4.80}]
-  iex> discounts = [%Discounts.Discount{product_code: "TS1", min: 1, rate: 0.2, type: "rate"}]
+  iex> discounts = [%Discount{product_code: "TS1", min: 1, rate: 0.2, type: "rate"}]
   iex> cart = ["TS1", "TS1", "TS2"]
 ```
 
 - Finally, get your checkout price with discounts (if apply):
 
 ```bash
-  iex> Checkout.checkout(cart, products, discount)
+  iex> Checkout.checkout(cart, products, discounts)
 ```
 
 ### Discounts
@@ -68,7 +68,7 @@ Works with the `rate` field, which holds **the percentage** of discount expresse
 An example:
 
 ```bash
-  %Discounts.Discount{product_code: "TS1", min: 1, rate: 0.2, type: "rate"} // 20% discount
+  %Discount{product_code: "TS1", min: 1, rate: 0.2, type: "rate"} # 20% discount
 ```
 
 #### Quantity
@@ -77,7 +77,7 @@ Works with the `quantity` field, which holds **the amount in money** for the dis
 An example:
 
 ```bash
-  %Discounts.Discount{product_code: "TS1", min: 1, quantity: 1, type: "quantity"} // 1(USD| EUR |..) of discount
+  %Discount{product_code: "TS1", min: 1, quantity: 1, type: "quantity"} # 1(USD| EUR |..) of discount
 ```
 
 #### Free
@@ -88,15 +88,19 @@ be parameterized with the `every` field.
 An example:
 
 ```bash
-  %Discounts.Discount{product_code: "TS1", every: 2, type: "free"} // get one free every 2 products bought
+  %Discount{product_code: "TS1", every: 2, type: "free"} # get one free every 2 products bought
 ```
 
 ### Notes
 
-- Discounts have flexibility in two ways basically:
+- Discounts have flexibility in three ways mostly:
 
   1. You can apply them once when a certain minimum of the same product previously bought (with the `min` property).
   2. You can apply them every x amount of the same product bought (with the `every` property).
+  3. These discounts can be applied by discounting money (`quantity` property) or by percentage (`rate` property).
+
+  more types/cases for discount can be further added by using the `type` property and extending the `Discount`
+  struct if needed.
 
 - Discounts are applied in the order they are present in the list of Discounts.
 
