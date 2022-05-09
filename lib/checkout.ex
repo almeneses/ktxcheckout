@@ -7,14 +7,14 @@ defmodule Checkout do
   Returns the total price from a list of `product_codes` with `discounts` applied.
 
   ## Examples
-    iex> Checkout.checkout(["GR1", "GR1"], [%Discounts.Discount{product_code: "GR1", every: 2, rate: 0.5, type: "free"}])
+    iex> checkout(["GR1", "GR1"], [%Product{code: "GR1", name: "Green tea", price: 3.11}], [%Discounts.Discount{product_code: "GR1", every: 2, rate: 0.5, type: "free"}])
     3.11
   """
-  def checkout(products, discounts \\ []) do
+  def checkout(codes, products, discounts \\ []) do
     cart =
-      products
-      |> Products.get_multiple_products_by_code()
-      |> to_cart_format(products)
+      codes
+      |> Products.get_multiple_products_by_code(products)
+      |> to_cart_format(codes)
 
     cart
     |> total_gross()
