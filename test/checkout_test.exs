@@ -1,48 +1,75 @@
 defmodule CheckoutTest do
   use ExUnit.Case
-  doctest Checkout
+
+  alias Products.Product
+
+  doctest Checkout, import: true
 
   describe "checkout/1" do
     setup do
+      products = [
+        %Product{code: "GR1", name: "Green tea", price: 3.11},
+        %Product{code: "CF1", name: "Coffee", price: 11.23},
+        %Product{code: "SR1", name: "Strawberries", price: 5.00}
+      ]
+
       discounts = [
         %{product_code: "GR1", every: 2, rate: 0.5, type: "free"},
         %{product_code: "SR1", min: 3, quantity: 0.5, type: "quantity"},
         %{product_code: "CF1", min: 3, rate: 0.3333, type: "rate"}
       ]
 
-      {:ok, discounts: discounts}
+      {:ok, discounts: discounts, products: products}
     end
 
     test "calculates the right price for 3 Green Teas, 1 Coffee and 1 Strawberries", %{
-      discounts: discounts
+      discounts: discounts,
+      products: products
     } do
       expected_price = 22.45
-      products = ["GR1", "SR1", "GR1", "GR1", "CF1"]
+      product_codes = ["GR1", "SR1", "GR1", "GR1", "CF1"]
 
-      assert Checkout.checkout(products, discounts) == expected_price
+      assert Checkout.checkout(product_codes, products, discounts) == expected_price
     end
 
-    test "calculates the right price for 2 Green Teas", %{discounts: discounts} do
+    test "calculates the right price for 1 Green Tea", %{
+      discounts: discounts,
+      products: products
+    } do
       expected_price = 3.11
-      products = ["GR1", "GR1"]
+      product_codes = ["GR1"]
 
-      assert Checkout.checkout(products, discounts) == expected_price
+      assert Checkout.checkout(product_codes, products, discounts) == expected_price
     end
 
-    test "calculates the right price for 1 Green Tea and 3 Strawberries", %{discounts: discounts} do
-      expected_price = 16.61
-      products = ["SR1", "SR1", "GR1", "SR1"]
+    test "calculates the right price for 2 Green Teas", %{
+      discounts: discounts,
+      products: products
+    } do
+      expected_price = 3.11
+      product_codes = ["GR1", "GR1"]
 
-      assert Checkout.checkout(products, discounts) == expected_price
+      assert Checkout.checkout(product_codes, products, discounts) == expected_price
+    end
+
+    test "calculates the right price for 1 Green Tea and 3 Strawberries", %{
+      discounts: discounts,
+      products: products
+    } do
+      expected_price = 16.61
+      product_codes = ["SR1", "SR1", "GR1", "SR1"]
+
+      assert Checkout.checkout(product_codes, products, discounts) == expected_price
     end
 
     test "calculates the right price for 1 Green Tea, 3 Coffees and 1 Strawberries", %{
-      discounts: discounts
+      discounts: discounts,
+      products: products
     } do
       expected_price = 30.57
-      products = ["GR1", "CF1", "SR1", "CF1", "CF1"]
+      product_codes = ["GR1", "CF1", "SR1", "CF1", "CF1"]
 
-      assert Checkout.checkout(products, discounts) == expected_price
+      assert Checkout.checkout(product_codes, products, discounts) == expected_price
     end
   end
 end
