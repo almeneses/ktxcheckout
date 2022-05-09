@@ -1,13 +1,17 @@
-defmodule Checkout do
+defmodule KtxCheckout.Checkout do
   @moduledoc """
   Documentation for `Checkout`.
   """
+
+  alias KtxCheckout.{Products, Discounts}
 
   @doc """
   Returns the total price from a list of `product_codes` with `discounts` applied.
 
   ## Examples
-    iex> checkout(["GR1", "GR1"], [%Product{code: "GR1", name: "Green tea", price: 3.11}], [%Discounts.Discount{product_code: "GR1", every: 2, rate: 0.5, type: "free"}])
+    iex> checkout(["GR1", "GR1"],
+    ...>[%KtxCheckout.Products.Product{code: "GR1", name: "Green tea", price: 3.11}],
+    ...>[%KtxCheckout.Discounts.Discount{product_code: "GR1", every: 2, rate: 0.5, type: "free"}])
     3.11
   """
   def checkout(codes, products, discounts \\ []) do

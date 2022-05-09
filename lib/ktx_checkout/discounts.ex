@@ -1,9 +1,7 @@
-defmodule Discounts do
+defmodule KtxCheckout.Discounts do
   @moduledoc """
   Discounts context.
   """
-
-  alias Discount
 
   @doc """
   Returns the price value for the given `cart` after applying the give `discounts`
